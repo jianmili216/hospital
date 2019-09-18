@@ -1,0 +1,46 @@
+{
+  "description": "DATA-API",
+  "name": "tm51/data",
+  "type": "project",
+  "license": "proprietary",
+  "repositories": {
+    "0": {
+      "type": "git",
+      "url": "ssh://git@git.tm51.com:7999/tm51/php-library.git"
+    },
+    "1": {
+      "type": "git",
+      "url": "ssh://git@git.tm51.com:7999/tm51/php-excel.git"
+    },
+    "packagist": {
+      "type": "composer",
+      "url": "https://packagist.phpcomposer.com"
+    }
+  },
+  "require": {
+    "php": ">=7.0.0",
+    "monolog/monolog": "^1.17",
+    "illuminate/database": "5.2.43",
+    "illuminate/events": "5.2.43",
+    "tm-framework/php-library": ">=2.0.0",
+    "tm-framework/php-excel": ">=2.0.0",
+    "illuminate/validation": ">=5.0.33",
+    "flc/dysms": "^1.0",
+    "aliyuncs/oss-sdk-php": "^2.3",
+    "phpmailer/phpmailer": "^6.0",
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "application/",
+      "App\\Library\\": "application/library/",
+      "App\\Model\\Dao\\": "application/models/dao/",
+      "App\\Model\\Bll\\": "application/models/bll/",
+      "App\\Model\\Cache\\": "application/models/cache/",
+      "App\\Plugin\\": "application/plugins/",
+      "App\\Cron\\": "application/cron/",
+      "App\\Utils\\": "application/utils/"
+    }
+  }
+}

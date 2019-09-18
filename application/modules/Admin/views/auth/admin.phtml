@@ -1,0 +1,206 @@
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="/admin/index/index">首页</a>
+            <span class="divider">
+                <i class="icon-angle-right arrow-icon"></i>
+            </span>
+        </li>
+        <li>
+            <a href="/admin/auth/admin">权限管理</a>
+            <span class="divider">
+                <i class="icon-angle-right arrow-icon"></i>
+            </span>
+        </li>
+        <li class="active">管理员列表</li>
+    </ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+    <div class="page-header position-relative">
+        <h1>
+            <small>
+                <i class="icon-list"></i>
+                管理员列表
+            </small>
+            <a href="/admin/auth/adminAdd">
+                <button class="btn btn-sm btn-info" style="float: right; border-radius: 3px;">
+                    <i class="icon-plus"></i>
+                </button>
+            </a>
+        </h1>
+    </div><!--/.page-header-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!--PAGE CONTENT BEGINS-->
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <table id="sample-table-1" class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th class="center">
+                                <label>
+                                    <input type="checkbox"/>
+                                    <span class="lbl"></span>
+                                </label>
+                            </th>
+                            <th>用户名</th>
+                            <th>手机号</th>
+                            <th>邮箱</th>
+                            <th>角色</th>
+                            <th>
+                                <i class="icon-time bigger-110 hidden-phone"></i>
+                                添加时间
+                            </th>
+                            <th>管理</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <?php foreach($data as $item):?>
+                        <tr>
+                            <td class="center">
+                                <?php if ($item['role_id'] != \App\Model\Dao\Role::SUPER_ROLE): ?>
+                                <label>
+                                    <input type="checkbox" name="id" value="<?=$item['id']?>"/>
+                                    <span class="lbl"></span>
+                                </label>
+                                <?php endif; ?>
+                            </td>
+                            <td><?=$item['name']?></td>
+                            <td><?=$item['mobile']?></td>
+                            <td><?=$item['email']?></td>
+                            <td>
+                                <?php if ($item['role_id'] == \App\Model\Dao\Role::SUPER_ROLE): ?>
+                                    <?=\App\Model\Dao\Role::$role_mapping[\App\Model\Dao\Role::SUPER_ROLE]?>
+                                <?php endif; ?>
+                                <?php foreach ($role as $val): ?>
+                                    <?php if ($val['id'] == $item['role_id']): ?>
+                                        <?= $val['name']; ?>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </td>
+                            <td><?=$item['created_at']?></td>
+                            <td>
+                                <div class="hidden-phone visible-desktop btn-group">
+                                    <?php if ($item['role_id'] != \App\Model\Dao\Role::SUPER_ROLE): ?>
+                                    <button onclick="adminEdit(<?=$item['id']?>)" class="btn btn-mini btn-info"
+                                            data-rel="tooltip" data-original-title="编辑">
+                                        <i class="icon-pencil bigger-120"></i>
+                                    </button>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach;?>
+                        </tbody>
+                    </table>
+                    <div style="float: left;">
+                        <button class="btn btn-small btn-danger" onclick="confirm('确认删除？') ? adminDel() : false;">
+                            删除
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!--/.row-fluid-->
+</div><!--/.page-content-->
+<script type="text/javascript">
+    $(function () {
+
+        $('table th input:checkbox').on('click', function () {
+            var that = this;
+            $(this).closest('table').find('tr > td:first-child input:checkbox').each(function () {
+                this.checked = that.checked;
+                $(this).closest('tr').toggleClass('selected');
+            });
+        });
+
+        $('[data-rel="tooltip"]').tooltip({placement: tooltip_placement});
+
+        function tooltip_placement(context, source) {
+            var $source = $(source);
+            var $parent = $source.closest('table')
+            var off1 = $parent.offset();
+            var w1 = $parent.width();
+            var off2 = $source.offset();
+            var w2 = $source.width();
+            if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
+            return 'left';
+        }
+    });
+
+    function setEssenceChange(admin_id, v) {
+        $.ajax({
+            type: "post",
+            url: "/admin/auth/setEssence",
+            data: {
+                admin_id: admin_id,
+                set_essence: v
+            },
+            success: function (res) {
+                if (res.code == 0) {
+                    setTimeout(function () {
+                        window.location.href = window.location.href
+                    }, 1500);
+                } else {
+                    bootbox.alert(res.message);
+                }
+            }
+        })
+    }
+
+
+    function showNameChange(admin_id, v) {
+        $.ajax({
+            type: "post",
+            url: "/admin/auth/showName",
+            data: {
+                admin_id: admin_id,
+                is_show_name: v
+            },
+            success: function (res) {
+                if (res.code == 0) {
+                    setTimeout(function () {
+                        window.location.href = window.location.href
+                    }, 1500);
+                } else {
+                    bootbox.alert(res.message);
+                }
+            }
+        })
+    }
+    function adminDel() {
+        var ids = $("input:checkbox[name='id']:checked").map(function (index, ele) {
+            return $(ele).val();
+        }).get().join(",");
+        if (ids == '') {
+            bootbox.alert('请先选择...');
+            return false
+        }
+        $.ajax({
+            type: "post",
+            url: "/admin/auth/adminDel",
+            data: {
+                id: ids,
+                status: status,
+            },
+            success: function (res) {
+                if (res.code == 0) {
+                    bootbox.alert(res.message);
+                    setTimeout(function () {
+                        window.location.href = window.location.href
+                    }, 1500);
+                } else {
+                    bootbox.alert(res.message);
+                }
+            }
+        })
+    }
+
+    function adminEdit(id) {
+        window.location.href = '/admin/auth/adminEdit?id=' + id;
+    }
+</script>

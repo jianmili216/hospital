@@ -1,0 +1,52 @@
+/*分页css*/
+.pagination {
+    margin: 0px;
+}
+/*排序css*/
+.sort::after {
+    content: " \f0dc";
+    font-family: FontAwesome;
+}
+.asc::after {
+    content: " \f0de";
+    font-family: FontAwesome;
+    top: 4px;
+}
+.desc::after {
+    content: " \f0dd";
+    font-family: FontAwesome;
+    top: -6px;
+}
+.replies {
+    color: #707070;
+}
+.replies:hover {
+    color: #005580;
+    text-decoration: none;
+}
+/* input file css */
+.file {
+    position: relative;
+    display: inline-block;
+    background: #333 ;
+    border: 1px solid #333;
+    padding: 4px 12px;
+    overflow: hidden;
+    color: #FFFFFF;
+    text-decoration: none;
+    text-indent: 0;
+    line-height: 20px;
+}
+.file input {
+    position: absolute;
+    font-size: 100px;
+    right: 0;
+    top: 0;
+    opacity: 0;
+}
+.file:hover {
+    background: #8b9aa3;
+    border-color: #8b9aa3;
+    color: #FFFFFF;
+    text-decoration: none;
+}

@@ -1,0 +1,131 @@
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="/admin/index/index">首页</a>
+            <span class="divider">
+                <i class="icon-angle-right arrow-icon"></i>
+            </span>
+        </li>
+        <li>
+            <a href="/admin/auth/admin">权限管理</a>
+            <span class="divider">
+                <i class="icon-angle-right arrow-icon"></i>
+            </span>
+        </li>
+        <li class="active">角色添加</li>
+    </ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+    <div class="page-header position-relative">
+        <h1>
+            <small>
+                <i class="icon-list"></i>
+                角色添加
+            </small>
+        </h1>
+    </div><!--/.page-header-->
+    <div class="row-fluid">
+
+        <?php if(!empty($errors)):?>
+            <?php foreach($errors as $error):?>
+                <div class="alert alert-block alert-error">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <i class="icon-remove"></i>
+                    </button>
+                    <?=$error[0]?>
+                </div>
+            <?php endforeach;?>
+        <?php endif;?>
+
+        <div class="span12">
+
+            <form class="form-horizontal" action="" method="post" >
+
+                <div class="control-group">
+                    <label class="control-label">角色名称</label>
+                    <div class="controls">
+                        <input name="name" value=""  placeholder="角色名称" type="text">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">描述</label>
+                    <div class="controls">
+                        <input name="describe" value=""  placeholder="描述" type="text">
+                    </div>
+                </div>
+                <!-- 权限部分 -->
+                <div class="control-group" style="width:400px;">
+                    <label class="control-label">菜单权限</label>
+                    <div class="controls">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <table id="sample-table-1" class="table table-striped table-bordered table-hover">
+                                    <tbody>
+                                    <?php foreach($allAuth as $item):?>
+                                        
+                                        <tr>
+                                            <td class="center">
+                                                <label>
+                                                    <input type="checkbox" name="id" value="<?=$item['id']?>" />
+                                                    <span class="lbl"></span>
+                                                </label>
+                                            </td>
+                                            <td><span style="font-size:20px;"><?=$item['level']?></span><?=$item['title']?></td>
+                                        </tr>
+                                    <?php endforeach;?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions" style="background-color: #FFFFFF">
+                    <!-- <button class="btn btn-info">
+                        <i class="icon-ok bigger-110"></i>
+                        提交
+                    </button> -->
+                    <input type="button" value="提交" class="btn btn-info" onClick="addAuth();">
+                </div>
+            </form>
+
+        </div><!--/.span-->
+    </div>
+</div><!--/.row-fluid-->
+<script>
+    $('[data-rel=tooltip]').tooltip({container: 'body'});
+    $('[data-rel=popover]').popover({container: 'body'});
+
+    function addAuth() {
+        var ids = $("input:checkbox[name='id']:checked").map(function (index, ele) {
+            return $(ele).val();
+        }).get().join(",");
+        if (ids == '') {
+            bootbox.alert('请先选择...');
+            return false
+        }
+        var name = $("input[name=name]").val();
+        var describe = $("input[name=describe]").val();
+        $.ajax({
+            type: "post",
+            url: "/admin/auth/roleAdd",
+            data: {
+                ids: ids,
+                name : name,
+                describe : describe
+            },
+            success: function (res) {
+                if (res.code == 0) {
+                    bootbox.alert(res.message);
+                    setTimeout(function () {
+                        window.location.href = '/admin/auth/role'
+                    }, 1500);
+                } else {
+                    bootbox.alert(res.message);
+                }
+            }
+        })
+    }
+</script>

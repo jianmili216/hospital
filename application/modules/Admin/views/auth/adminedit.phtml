@@ -1,0 +1,120 @@
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="/admin/index/index">首页</a>
+            <span class="divider">
+                <i class="icon-angle-right arrow-icon"></i>
+            </span>
+        </li>
+        <li>
+            <a href="/admin/auth/admin">广告管理</a>
+            <span class="divider">
+                <i class="icon-angle-right arrow-icon"></i>
+            </span>
+        </li>
+        <li class="active">编辑管理员</li>
+    </ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+    <div class="page-header position-relative">
+        <h1>
+            <small>
+                <i class="icon-list"></i>
+                编辑管理员
+            </small>
+        </h1>
+    </div><!--/.page-header-->
+    <div class="row-fluid">
+
+        <?php if(!empty($errors)):?>
+            <?php foreach($errors as $error):?>
+                <div class="alert alert-block alert-error">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <i class="icon-remove"></i>
+                    </button>
+                    <?=$error[0]?>
+                </div>
+            <?php endforeach;?>
+        <?php endif;?>
+
+        <div class="span12">
+
+            <form class="form-horizontal" action="/admin/auth/adminEdit" method="post">
+
+                <input type="hidden" name="id" value="<?=$data['id']?>">
+
+                <div class="control-group">
+                    <label class="control-label">所属角色</label>
+                    <div class="controls">
+                        <select name="role_id">
+                            <?php foreach ($role as $val): ?>
+                                <?php if ($val['id'] == $data['role_id']): ?>
+                                    <option selected value="<?=$val['id'];?>"><?=$val['name'];?></option>
+                                <?php else:?>
+                                    <option value="<?=$val['id'];?>"><?=$val['name'];?></option>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">用户名</label>
+                    <div class="controls">
+                        <input name="name" value="" placeholder="默认为空不修改..." type="text">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">密码</label>
+                    <div class="controls">
+                        <input name="password" value="" placeholder="默认为空不修改..." type="text">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">邮箱</label>
+                    <div class="controls">
+                        <input name="email" value="<?=$data['email'];?>" placeholder="邮箱" type="text">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">手机号</label>
+                    <div class="controls">
+                        <input name="mobile" value="<?=$data['mobile'];?>" placeholder="手机号" type="text">
+                    </div>
+                </div>
+                <div class="form-actions" style="background-color: #FFFFFF">
+                    <button class="btn btn-info" type="submit">
+                        <i class="icon-ok bigger-110"></i>
+                        提交
+                    </button>
+                </div>
+            </form>
+
+        </div><!--/.span-->
+    </div>
+</div><!--/.row-fluid-->
+<script>
+    $('[data-rel=tooltip]').tooltip({container: 'body'});
+    $('[data-rel=popover]').popover({container: 'body'});
+
+    $('#id-input-image').fileupload({
+        url: '/index/upload/image',
+        dataType: 'json',
+        formData:{image_type:3},
+        done: function(e, res) {
+            console.log(res.result);
+            if (res.result.code == 0) {
+                $('#input-path').val(res.result.data.path);
+                $('#input-path-img').attr('src', res.result.data.url);
+                $('#input-path-img').parent('div').show();
+            } else {
+                bootbox.alert(res.message);
+            }
+        }
+    });
+</script>

@@ -1,0 +1,15 @@
+logs/
+vendor/
+upload/
+download/
+.idea/
+composer.lock
+.DS_Store
+nohup.out
+conf/application.development.ini
+conf/application.test.ini
+repush.sh
+public/index.php
+conf/application.product.ini
+conf/application.ini
+application/Bootstrap.php
