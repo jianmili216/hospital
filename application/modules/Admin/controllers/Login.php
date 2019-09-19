@@ -28,7 +28,6 @@ class LoginController extends AdminController
 
             $where['name'] = $this->params['username'];
             $admin = BAdmin::getUserOne($where);
-//            d($admin);
             if (!$admin) $this->errorResponse('用户名或密码错误');
             $password = md5(md5($this->params['password']) . $admin['salt']);
             if ($password != $admin['password']) $this->errorResponse('用户名或密码错误');

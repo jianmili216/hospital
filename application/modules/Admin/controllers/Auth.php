@@ -96,11 +96,6 @@ class AuthController extends AdminController
             if (empty($errors)) {
                 if (!empty($this->params['name'])) {
                     $name = trim($this->params['name']);
-                    $user = BAdmin::getUserOne(['name' => $name]);
-                    if ($user) {
-                        $errors['error'] = [ErrorCode::$error_code_mapping[ErrorCode::USER_REPEAT]];
-                        $this->getView()->assign('errors', $errors);
-                    }
                     $data['name'] = $name;
                 }
                 if (!empty($this->params['password'])) {
@@ -111,8 +106,14 @@ class AuthController extends AdminController
                 $data['email'] = $this->params['email'];
                 $data['salt'] = rand(100000, 999999);
                 $data['password'] = md5(md5($this->params['password']) . $data['salt']);
-                BAdmin::update($this->params['id'], $data);
-                $this->redirect('/admin/auth/admin');
+                $admin = BAdmin::getUserOne(['name' => $this->params['name']]);
+                if ($admin){
+                    $errors['error'] = [ErrorCode::$error_code_mapping[ErrorCode::USER_REPEAT]];
+                    $this->getView()->assign('errors', $errors);
+                }else{
+                    BAdmin::update($this->params['id'], $data);
+                    $this->redirect('/admin/auth/admin');
+                }
             } else {
                 $this->getView()->assign('errors', $errors);
             }
